@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 //authenticates the user and passes it on to the route
 const authenticate = (req, res, next) => {
+    console.log(req.headers.authorization);
     if(!req.headers.authorization) {
         return res.status(401).send("Please login");
     }
@@ -18,7 +19,6 @@ const authenticate = (req, res, next) => {
         }
         
         req.user = decoded;
-        console.log(req.user);
         next();
     });
 };

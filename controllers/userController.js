@@ -23,7 +23,6 @@ const register = (req, res) => {
                 res.status(201).send("Successfully registered");
             })
             .catch((err) => {
-                console.log(err);
                 res.status(400).send("Failed to register");
             });
     });
@@ -57,7 +56,6 @@ const login = (req, res) => {
             res.json({ token });
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).send("Invalid credentials");
         });
 };
@@ -72,7 +70,6 @@ const addClothes = (req, res) => {
             res.status(200).send("New clothing item added");
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).send("Error adding clothing item");
         });
 };
@@ -80,52 +77,59 @@ const addClothes = (req, res) => {
 const getClothes = (req, res) => {
     const { id } = req.user;
 
-    knex('user')
-        .where({id: id})
-        .join('clothes', 'clothes.user_id', '=', 'user.id')
+    knex('clothes')
+        .where({user_id: id})
         .then((data) => {
             res.status(200).json(data);
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).send("Error retrieving your clothes");
         });
 };
 
+const deleteClothes = (req, res) => {
+    const { clothingId } = req.body;
+    knex('clothes')
+        .where({
+            id: clothingId
+        })
+        .del()
+        .then(() => {
+            res.status(200).send("Clothing item deleted");
+        })
+        .catch((err) => {
+            res.status(400).send("Error deleteing clothing item");
+        });
+}
+
 const incrementWear = (req, res) => {
-    const { id } = req.user;
     const clothingId = req.body.clothingId;
 
     knex('clothes')
         .where({
             id: clothingId,
-            user_id: id
         })
         .increment({wears: 1})
         .then(() => {
             res.status(200).send("Added one wear");
         })
         .catch((err) => {
-            console.log(err);
             res.status(200).send("Error adding a wear");
         });
 };
 
 const decrementWear = (req, res) => {
-    const { id } = req.user;
     const clothingId = req.body.clothingId;
 
     knex('clothes')
         .where({
             id: clothingId,
-            user_id: id
         })
         .decrement({wears: 1})
         .then(() => {
             res.status(200).send("Removed one wear");
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).send("Error removing a wear");
         });
 };
@@ -134,6 +138,7 @@ module.exports = {
     register,
     addClothes,
     getClothes,
+    deleteClothes,
     incrementWear,
     decrementWear
 }
