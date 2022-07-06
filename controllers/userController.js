@@ -28,8 +28,7 @@ const register = (req, res) => {
     });
 };
 
-//Login a employee
-//expected body: { email, password }
+
 const login = (req, res) => {
     const { email, password } = req.body;
 
@@ -61,11 +60,11 @@ const login = (req, res) => {
 };
 
 const addClothes = (req, res) => {
-    const { cost, title } = req.body;
+    const { cost, title, category } = req.body;
     const { id } = req.user;
 
     knex('clothes')
-        .insert({user_id: id, cost: cost, title: title})
+        .insert({user_id: id, cost: cost, title: title, category: category})
         .then(() => {
             res.status(200).send("New clothing item added");
         })

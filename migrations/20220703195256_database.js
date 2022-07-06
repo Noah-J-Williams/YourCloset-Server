@@ -14,6 +14,7 @@ exports.up = function(knex) {
     .createTable('clothes', (table) => {
         table.increments('id').primary();
         table.string('title').notNullable();
+        table.string('category').notNullable();
         table
             .integer('user_id')
             .unsigned()
@@ -21,7 +22,7 @@ exports.up = function(knex) {
             .inTable('user')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
-        table.integer('wears').defaultTo(0);
+        table.integer('wears').defaultTo(1);
         table.float('cost');
         table.timestamp('updated_at').defaultTo(knex.fn.now());
     })
